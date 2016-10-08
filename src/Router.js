@@ -229,30 +229,6 @@ export default class Router {
       return this;
     }
   }
-  /**
-   * Create routes based on an object
-   *
-   * @param {Object} [Options, Routes]
-   * @param {Object Routes}
-   * @return {self} Router
-   */
-  listen() {
-    let opts, routes;
-    if (arguments[0] && arguments[1]) {
-      opts = arguments[0];
-      routes = arguments[1];
-    } else {
-      routes = arguments[0];
-    }
-    return (function() {
-      // TODO: Accept multi-level routes
-      for (let key in routes) {
-        this.add.call(this, key, routes[key]);
-      }
-
-      return this;
-    }).call(new Router(opts || {}));
-  };
 }
 
 Router.CallStack = CallStack;
