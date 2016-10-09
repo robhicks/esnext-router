@@ -1,33 +1,32 @@
 Router
 ==========
 
-#### Tiny es2015 JavaScript Router with name parameters, HTML5 pushState and Middleware support.
+#### Tiny es2015 JavaScript Router with named parameters, HTML5 pushState and express-like middleware support.
 
 ## Why Another Router
 
 I needed/wanted a small client-size router for use in an es2015 app. I found [Grapnel](https://github.com/baseprime/grapnel).
-It had all the features but had 2 drawbacks. It attempts to be both a client and server browser. And
-it doesn't load in an es2015 app using an import statement. So I rewrote it as an es2015 Router. 
+It had all the features but had 2 drawbacks. It attempts to be both a client and server router. And
+it doesn't load in an es2015 app using an import statement. So I rewrote it as an esnext-router.
 
 ## Download/Installation
 
 **Install with npm**
 ```bash
-npm install es2015-router
+npm install esnext-router
 ```
 **Or by using jspm:**
 ```bash
-jspm install es2015-router
+jspm install esnext-router
 ```
 
-# es2015 router Features
+# esnext-router Features
 
 - Supports routing using `pushState` or `hashchange` concurrently
 - Supports Named Parameters similar to Sinatra, Restify, and Express
 - Middleware Support
 - Works on the client or server-side
 - RegExp Support
-- RequreJS/AMD, Browserify, and CommonJS Compatibility
 - Supports `#` or `#!` for `hashchange` routing
 - Unobtrusive, supports multiple routers on the same page
 - No dependencies
@@ -35,7 +34,7 @@ jspm install es2015-router
 ## Basic Router
 
 ```javascript
-import Router from 'es2015-router';
+import Router from 'esnext-router';
 const router = new Router();
 
 router.get('products/:category/:id?', function(req){
@@ -50,7 +49,7 @@ router.get('products/:category/:id?', function(req){
 ## Using pushState
 
 ```javascript
-import Router from 'es2015-router';
+import Router from 'esnext-router';
 const router = new Router({ pushState : true });
 
 router.get('/products/:category/:id?', function(req){
@@ -66,12 +65,13 @@ router.navigate('/products/widgets/134');
 
 ## Named Parameters
 
-es2015 router supports regex style routes similar to Sinatra, Restify, and Express. The properties are mapped to the parameters in the request.
+esnext-router supports regex style routes similar to Sinatra, Restify, and Express. The properties are mapped to the parameters in the request.
+
 ```javascript
 router.get('products/:id?', function(req){
-    // GET /file.html#products/134
-    req.params.id
-    // => 134
+  // GET /file.html#products/134
+  req.params.id
+  // => 134
 });
 
 router.get('products/*', function(req){
@@ -82,18 +82,18 @@ router.get('products/*', function(req){
 
 ## Middleware Support
 
-es2015 router also supports middleware:
+esnext-router also supports middleware:
 
 ```javascript
 const auth = function(req, event, next){
-    user.auth(function(err){
-        req.user = this;
-        next();
-    });
+  user.auth(function(err){
+      req.user = this;
+      next();
+  });
 }
 
 router.get('/*', auth, function(req){
-    console.log(req.user);
+  console.log(req.user);
 });
 ```
 
@@ -105,11 +105,11 @@ You can add context to a route and even use it with middleware:
 const usersRoute = router.context('/user/:id', getUser, getFollowers); // Middleware can be used here
 
 usersRoute('/', function(req, event){
-    console.log('Profile', req.params.id);
+  console.log('Profile', req.params.id);
 });
 
 usersRoute('/followers', otherMiddleware, function(req, event){ // Middleware can be used here too
-    console.log('Followers', req.params.id);
+  console.log('Followers', req.params.id);
 });
 
 router.navigate('/user/13589');
@@ -123,14 +123,14 @@ router.navigate('/user/13589/followers');
 
 ```javascript
 const routes = {
-    'products' : function(req){
-        // GET /file.html#products
-    },
-    'products/:category/:id?' : function(req){
-        // GET /file.html#products/widgets/35
-        req.params.category
-        // => widgets
-    }
+  'products' : function(req){
+      // GET /file.html#products
+  },
+  'products/:category/:id?' : function(req){
+      // GET /file.html#products/widgets/35
+      req.params.category
+      // => widgets
+  }
 }
 
 router.listen(routes);
@@ -139,29 +139,29 @@ router.listen(routes);
 ## Event Handling
 
 ```javascript
-import Router from 'es2015-router';
+import Router from 'esnext-router';
 const router = new Router({ pushState : true, root : '/' });
 
 router.on('navigate', function(event){
-    // GET /foo/bar
-    console.log('URL changed to %s', this.path());
-    // => URL changed to /foo/bar
+  // GET /foo/bar
+  console.log('URL changed to %s', this.path());
+  // => URL changed to /foo/bar
 });
 ```
 
 ## RegExp Support
 
-es2015 router allows RegEx when defining a route:
+esnext-router allows RegEx when defining a route:
 
 ```javascript
-import Router from 'es2015-router';
+import Router from 'esnext-router';
 const expression = /^food\/tacos\/(.*)$/i;
 const router = new Router();
 
 router.get(expression, function(req, event){
-    // GET http://mysite.com/page#food/tacos/good
-    console.log('I think tacos are %s.', req.params[0]);
-    // => "He thinks tacos are good."
+  // GET http://mysite.com/page#food/tacos/good
+  console.log('I think tacos are %s.', req.params[0]);
+  // => "He thinks tacos are good."
 });
 ```
 
@@ -177,19 +177,19 @@ const router = new Router({ root : '/public/search/', pushState : true });
 The root may require a beginning slash and a trailing slash depending on how your application utilizes the router.
 
 ## Middleware
-es2015-router uses middleware similar to how Express uses middleware. Middleware has access to the `req` object, `event` object, and the next middleware in the call stack (commonly denoted as `next`). Middleware must call `next()` to pass control to the next middleware, otherwise the router will stop.
+esnext-router uses middleware similar to how Express uses middleware. Middleware has access to the `req` object, `event` object, and the next middleware in the call stack (commonly denoted as `next`). Middleware must call `next()` to pass control to the next middleware, otherwise the router will stop.
 
 For more information about how middleware works, see [Using Middleware](http://expressjs.com/guide/using-middleware.html).
 ```javascript
 const user = function(req, event, next){
-    user.get(function(err){
-        req.user = this;
-        next();
-    });
+  user.get(function(err){
+      req.user = this;
+      next();
+  });
 }
 
 router.get('/user/*', user, function(req){
-    console.log(req.user);
+  console.log(req.user);
 });
 ```
 
@@ -202,18 +202,18 @@ router.navigate('/products/123');
 ## Stopping a Route Event
 ```javascript
 router.on('match', function(event){
-    event.preventDefault(); // Stops event handler
+  event.preventDefault(); // Stops event handler
 });
 ```
 
 ## Stopping Event Propagation
 ```javascript
 router.get('/products/:id', function(req, event){
-    event.stopPropagation(); // Stops propagation of the event
+  event.stopPropagation(); // Stops propagation of the event
 });
 
 router.get('/products/widgets', function(req, event){
-    // This will not be executed
+  // This will not be executed
 });
 
 router.navigate('/products/widgets');
@@ -223,20 +223,20 @@ router.navigate('/products/widgets');
 You can specify a route that only uses a wildcard `*` as your final route, then use `event.parent()` which returns `false` if the call stack doesn't have any other routes to run.
 ```javascript
 const routes = {
-    '/' : function(req, e){
-        // Handle route
-    },
-    '/store/products/:id' : function(req, e){
-        // Handle route
-    },
-    '/category/:id' : function(req, e){
-        // Handle route
-    },
-    '/*' : function(req, e){
-        if(!e.parent()){
-            // Handle 404
-        }
+  '/' : function(req, e){
+    // Handle route
+  },
+  '/store/products/:id' : function(req, e){
+    // Handle route
+  },
+  '/category/:id' : function(req, e){
+      // Handle route
+  },
+  '/*' : function(req, e){
+    if(!e.parent()){
+        // Handle 404
     }
+  }
 }
 
 router.listen({ pushState : true }, routes);
