@@ -10,6 +10,7 @@ builtAssets
 *.iml
 *.ipr
 *.iws
+*.log
 npm-debug.log
 .foreman
 .env*

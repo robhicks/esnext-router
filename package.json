@@ -1,6 +1,6 @@
 {
   "name": "esnext-router",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tiny es2015 JavaScript Router with named parameters, HTML5 pushState and express-like Middleware support",
   "jspmPackage": true,
   "main": "src/Router.js",

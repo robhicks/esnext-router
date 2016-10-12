@@ -1,22 +1,22 @@
 export default class CallStack {
-  constructor() {
-    this.stack = CallStack.global.slice(0);
-    this.router = router;
-    this.runCallback = true;
-    this.callbackRan = false;
-    this.propagateEvent = true;
-    this.value = router.path();
+  constructor(router, extendObj) {
+      this.stack = CallStack.global.slice(0);
+      this.router = router;
+      this.runCallback = true;
+      this.callbackRan = false;
+      this.propagateEvent = true;
+      this.value = router.path();
 
-    for (let key in extendObj) {
-      this[key] = extendObj[key];
+      for (let key in extendObj) {
+        this[key] = extendObj[key];
+      }
+      return this;
     }
-    return this;
-  }
-  /**
-   * Prevent a callback from being called
-   *
-   * @return {this} CallStack
-   */
+    /**
+     * Prevent a callback from being called
+     *
+     * @return {this} CallStack
+     */
   preventDefault() {
     this.runCallback = false;
   };
@@ -69,6 +69,7 @@ export default class CallStack {
    * @return {self} CallStack
    */
   next() {
+    console.log("this.stack", this.stack)
     return this.stack.shift().call(this.router, this.req, this, () => {
       this.next.call(this);
     })

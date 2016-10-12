@@ -1,8 +1,8 @@
 export default class Request {
-  constructor(route) {
+  constructor(route, router) {
     this.route = route;
     this.keys = [];
-    this.regex = route.regexRoute(route, this.keys);
+    this.regex = router.regexRoute(route, this.keys);
     return this;
   }
   /**
