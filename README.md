@@ -22,12 +22,11 @@ jspm install esnext-router
 
 # esnext-router Features
 
-- Supports routing using `pushState` or `hashchange` concurrently
+- Supports routing using `pushState`
 - Supports Named Parameters similar to Sinatra, Restify, and Express
 - Middleware Support
 - Works on the client or server-side
 - RegExp Support
-- Supports `#` or `#!` for `hashchange` routing
 - Unobtrusive, supports multiple routers on the same page
 - No dependencies
 
@@ -37,7 +36,7 @@ jspm install esnext-router
 import Router from 'esnext-router';
 const router = new Router();
 
-router.get('products/:category/:id?', function(req){
+router.add('products/:category/:id?', function(req){
     const id = req.params.id,
         category = req.params.category;
     // GET http://mysite.com/#products/widgets/134
@@ -46,35 +45,18 @@ router.get('products/:category/:id?', function(req){
 });
 ```
 
-## Using pushState
-
-```javascript
-import Router from 'esnext-router';
-const router = new Router({ pushState : true });
-
-router.get('/products/:category/:id?', function(req){
-    const id = req.params.id,
-        category = req.params.category
-
-    console.log(category, id);
-});
-
-router.navigate('/products/widgets/134');
-// => widgets 134
-```
-
 ## Named Parameters
 
 esnext-router supports regex style routes similar to Sinatra, Restify, and Express. The properties are mapped to the parameters in the request.
 
 ```javascript
-router.get('products/:id?', function(req){
+router.add('products/:id?', function(req){
   // GET /file.html#products/134
   req.params.id
   // => 134
 });
 
-router.get('products/*', function(req){
+router.add('products/*', function(req){
     // The wildcard/asterisk will match anything after that point in the URL
     // Parameters are provided req.params using req.params[n], where n is the nth capture
 });
@@ -92,7 +74,7 @@ const auth = function(req, event, next){
   });
 }
 
-router.get('/*', auth, function(req){
+router.add('/*', auth, function(req){
   console.log(req.user);
 });
 ```
@@ -133,14 +115,13 @@ const routes = {
   }
 }
 
-router.listen(routes);
 ```
 
 ## Event Handling
 
 ```javascript
 import Router from 'esnext-router';
-const router = new Router({ pushState : true, root : '/' });
+const router = new Router();
 
 router.on('navigate', function(event){
   // GET /foo/bar
@@ -158,7 +139,7 @@ import Router from 'esnext-router';
 const expression = /^food\/tacos\/(.*)$/i;
 const router = new Router();
 
-router.get(expression, function(req, event){
+router.add(expression, function(req, event){
   // GET http://mysite.com/page#food/tacos/good
   console.log('I think tacos are %s.', req.params[0]);
   // => "He thinks tacos are good."
@@ -166,9 +147,9 @@ router.get(expression, function(req, event){
 ```
 
 ## Enabling PushState
-```javascript
-const router = new Router({ pushState : true });
-```
+
+pushState is the default.
+
 You can also specify a root URL by setting it as an option:
 
 ```javascript
@@ -182,19 +163,20 @@ esnext-router uses middleware similar to how Express uses middleware. Middleware
 For more information about how middleware works, see [Using Middleware](http://expressjs.com/guide/using-middleware.html).
 ```javascript
 const user = function(req, event, next){
-  user.get(function(err){
+  user.add(function(err){
       req.user = this;
       next();
   });
 }
 
-router.get('/user/*', user, function(req){
+router.add('/user/*', user, function(req){
   console.log(req.user);
 });
 ```
 
 ## Navigation
-If pushState is enabled, you can navigate through your application with `router.navigate`:
+You can navigate through your application with `router.navigate`:
+
 ```javascript
 router.navigate('/products/123');
 ```
@@ -208,11 +190,11 @@ router.on('match', function(event){
 
 ## Stopping Event Propagation
 ```javascript
-router.get('/products/:id', function(req, event){
+router.add('/products/:id', function(req, event){
   event.stopPropagation(); // Stops propagation of the event
 });
 
-router.get('/products/widgets', function(req, event){
+router.add('/products/widgets', function(req, event){
   // This will not be executed
 });
 
@@ -239,7 +221,6 @@ const routes = {
   }
 }
 
-router.listen({ pushState : true }, routes);
 ```
 
 &nbsp;
@@ -254,7 +235,7 @@ router.listen({ pushState : true }, routes);
  * @param {String|RegExp} path
  * @param {Function} [[middleware], callback]
 */
-router.get('/store/:category/:id?', function(req, event){
+router.add('/store/:category/:id?', function(req, event){
     const category = req.params.category,
         id = req.params.id;
 
@@ -329,9 +310,7 @@ router.navigate('/user/13589/followers');
 ##### `fragment` (Deprecated)
 
 ## Options
-* `pushState` Enable pushState, allowing manipulation of browser history instead of using the `#` and `hashchange` event
 * `root` Root of your app, all navigation will be relative to this
-* `hashBang` Enable `#!` as the anchor of a `hashchange` router instead of using just a `#`
 
 ## Events
 * `navigate` Fires when router navigates through history

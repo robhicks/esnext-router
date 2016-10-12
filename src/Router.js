@@ -7,19 +7,14 @@
  */
 import CallStack from './CallStack.js';
 import Request from './Request.js';
+import regexRoute from './regexRoute.js';
 
 export default class Router {
   constructor(opts) {
     this.events = {}; // Event Listeners
     this.state = null; // Router state object
     this.options = opts || {}; // Options
-    this.options.env = this.options.env || 'client';
-    this.options.mode = this.options.pushState ? 'pushState' : 'hashchange';
-    this.version = '1.0.0';
-
-    window.addEventListener('popstate', (e) => {
-      this.trigger('hashchange');
-    });
+    this.version = '1.0.2';
 
     window.addEventListener('popstate', (e) => {
       if (this.state && this.state.previousState === null) return false;
@@ -38,30 +33,14 @@ export default class Router {
    * @param {Bool} Strict mode
    */
   regexRoute(path, keys, sensitive, strict) {
-    if (path instanceof RegExp) return path;
-    if (path instanceof Array) path = '(' + path.join('|') + ')';
-    // Build route RegExp
-    path = path.concat(strict ? '' : '/?')
-      .replace(/\/\(/g, '(?:/')
-      .replace(/\+/g, '__plus__')
-      .replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g, function(_, slash, format, key, capture, optional) {
-        keys.push({
-          name: key,
-          optional: !!optional
-        });
-        slash = slash || '';
-
-        return '' + (optional ? '' : slash) + '(?:' + (optional ? slash : '') + (format || '') + (capture || (format && '([^/.]+?)' || '([^/]+?)')) + ')' + (optional || '');
-      })
-      .replace(/([\/.])/g, '\\$1')
-      .replace(/__plus__/g, '(.+)')
-      .replace(/\*/g, '(.*)');
-
-    return new RegExp('^' + path + '$', sensitive ? '' : 'i');
+    return regexRoute(path, keys, sensitive, strict);
   }
 
-  get(route) {
-    return this.add(route);
+  addEventListener(link) {
+    link.addEventListener('click', (e) => {
+      this.navigate(link.getAttribute('href'));
+      e.preventDefault();
+    })
   }
 
   /**
@@ -73,7 +52,7 @@ export default class Router {
   add(route) {
       const middleware = Array.prototype.slice.call(arguments, 1, -1);
       const handler = Array.prototype.slice.call(arguments, -1)[0];
-      const request = new Request(route, this);
+      const request = new Request(route);
       const eventName = 'navigate';
 
       const invoke = () => {
@@ -136,8 +115,8 @@ export default class Router {
      * @return {this} Router
      */
   bind(event, handler) {
-    return this.on(event, handler);
-  }
+      return this.on(event, handler);
+    }
   on(event, handler) {
       const events = event.split(' ');
       events.forEach((event) => {
@@ -198,34 +177,15 @@ export default class Router {
     let frag;
 
     if ('string' === typeof pathname) {
-      // Set path
-      if (this.options.mode === 'pushState') {
-        frag = (this.options.root) ? (this.options.root + pathname) : pathname;
-        window.history.pushState({}, null, frag);
-      } else if (window.location) {
-        window.location.hash = (this.options.hashBang ? '!' : '') + pathname;
-      } else {
-        window._pathname = pathname || '';
-      }
+      frag = (this.options.root) ? (this.options.root + pathname) : pathname;
+      window.history.pushState({}, null, frag);
       return this;
     } else if ('undefined' === typeof pathname) {
       // Get path
-      if (this.options.mode === 'pushState') {
-        frag = window.location.pathname.replace(this.options.root, '');
-      } else if (this.options.mode !== 'pushState' && window.location) {
-        frag = (window.location.hash) ? window.location.hash.split((this.options.hashBang ? '#!' : '#'))[1] : '';
-      } else {
-        frag = window._pathname || '';
-      }
+      frag = window.location.pathname.replace(this.options.root, '');
       return frag;
     } else if (pathname === false) {
-      // Clear path
-      if (this.options.mode === 'pushState') {
-        window.history.pushState({}, null, this.options.root || '/');
-      } else if (window.location) {
-        window.location.hash = (this.options.hashBang) ? '!' : '';
-      }
-
+      window.history.pushState({}, null, this.options.root || '/');
       return this;
     }
   }

@@ -1,8 +1,10 @@
+import regexRoute from './regexRoute.js';
+
 export default class Request {
-  constructor(route, router) {
+  constructor(route) {
     this.route = route;
     this.keys = [];
-    this.regex = router.regexRoute(route, this.keys);
+    this.regex = regexRoute(route, this.keys);
     return this;
   }
   /**
