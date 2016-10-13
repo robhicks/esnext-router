@@ -55,7 +55,10 @@ export default class Router {
       const request = new Request(route);
       const eventName = 'navigate';
 
+      // console.log("this", this)
+
       const invoke = () => {
+        // console.log("this", this)
         // Build request parameters
         const req = request.parse(this.path());
         // Check if matches are found
@@ -85,6 +88,7 @@ export default class Router {
           // Call handler
           stack.callback();
         }
+        // console.log("this", this)
         // Returns this
         return this;
       }
@@ -114,10 +118,8 @@ export default class Router {
      * @param {Function} callback
      * @return {this} Router
      */
-  bind(event, handler) {
-      return this.on(event, handler);
-    }
   on(event, handler) {
+    // console.log("event", event, "handler", handler)
       const events = event.split(' ');
       events.forEach((event) => {
         if (this.events[event]) {

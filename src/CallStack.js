@@ -69,7 +69,7 @@ export default class CallStack {
    * @return {self} CallStack
    */
   next() {
-    console.log("next():this.stack", this.stack)
+    // console.log("next():this.stack", this.stack)
     return this.stack.shift().call(this.router, this.req, this, () => {
       this.next.call(this);
     })
