@@ -10,10 +10,10 @@ import Request from './Request.js';
 import regexRoute from './regexRoute.js';
 
 export default class Router {
-  constructor(opts) {
+  constructor(options = {}) {
     this.events = {}; // Event Listeners
     this.state = null; // Router state object
-    this.options = opts || {}; // Options
+    this.options = options; // Options
     this.version = '1.0.2';
 
     window.addEventListener('popstate', (e) => {
@@ -36,10 +36,13 @@ export default class Router {
     return regexRoute(path, keys, sensitive, strict);
   }
 
-  addEventListener(link) {
-    link.addEventListener('click', (e) => {
-      this.navigate(link.getAttribute('href'));
-      e.preventDefault();
+  addComponentAnchorEventListeners(componentDom) {
+    const anchors = componentDom.querySelectorAll('a');
+    anchors.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        this.navigate(link.getAttribute('href'));
+        e.preventDefault();
+      })
     })
   }
 
@@ -119,7 +122,6 @@ export default class Router {
      * @return {this} Router
      */
   on(event, handler) {
-    // console.log("event", event, "handler", handler)
       const events = event.split(' ');
       events.forEach((event) => {
         if (this.events[event]) {
