@@ -23,10 +23,12 @@ export default class Request {
     };
     // Build parameters
     req.matches.forEach((value, i) => {
-      const key = (self.keys[i] && self.keys[i].name) ? self.keys[i].name : i;
-      // Parameter key will be its key or the iteration index. This is useful if a wildcard (*) is matched
-      req.params[key] = (value) ? decodeURIComponent(value) : undefined;
-    })
+      if (self.keys) {
+        const key = (self.keys[i] && self.keys[i].name) ? self.keys[i].name : i;
+        // Parameter key will be its key or the iteration index. This is useful if a wildcard (*) is matched
+        req.params[key] = (value) ? decodeURIComponent(value) : undefined;
+      }
+    });
 
     return req;
   };
