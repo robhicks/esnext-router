@@ -1,20 +1,17 @@
 {
   "name": "esnext-router",
-  "version": "1.0.5",
-  "description": "Tiny es2015 JavaScript Router with named parameters, HTML5 pushState and express-like Middleware support",
+  "version": "1.0.6",
+  "description": "Tiny es2015 JavaScript Router with named parameters, HTML5 pushState and express-like middleware support",
+  "main": "dist/esnext-router.iife.js",
   "module": "dist/esnext-router.es.js",
-  "main": "src/Router.js",
-  "jsnext:main": "src/Router.js",
   "scripts": {
     "karma": "karma start karma.conf.js",
     "test": "karma start karma.conf.js --single-run",
     "build": "rollup -cw"
   },
-  "format": "esm",
-  "registry": "npm",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/robhicks/es2015-router.git"
+    "url": "git+https://github.com/robhicks/esnext-router.git"
   },
   "keywords": [
     "JavaScript",
@@ -29,11 +26,10 @@
   "author": "Rob Hicks <rob@hixfamily.org>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/robhicks/es2015-router/issues"
+    "url": "https://github.com/robhicks/esnext-router/issues"
   },
-  "homepage": "https://github.com/robhicks/es2015-router#readme",
+  "homepage": "https://github.com/robhicks/esnext-router#readme",
   "engines": {
-    "node": "6.x"
   },
   "devDependencies": {
     "chai": "^3.5.0",

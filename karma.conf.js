@@ -23,7 +23,7 @@ module.exports = function(config) {
       'test.js'
     ],
     frameworks: ['mocha', 'chai'],
-    logLevel: 'ERROR',
+    logLevel: config.LOG_ERROR,
     preprocessors: {
       'assets/**/test/**/*.js': ['babel'],
       'dist/modules/**/*.js': 'coverage'
