@@ -23,19 +23,6 @@ export default class Router {
     return this;
   }
 
-  /**
-   * Create a RegExp Route from a string
-   * This is the heart of the router and I've made it as small as possible!
-   *
-   * @param {String} Path of route
-   * @param {Array} Array of keys to fill
-   * @param {Bool} Case sensitive comparison
-   * @param {Bool} Strict mode
-   */
-  regexRoute(path, keys, sensitive, strict) {
-    return regexRoute(path, keys, sensitive, strict);
-  }
-
   addComponentAnchorEventListeners(componentDom) {
     const anchors = componentDom.querySelectorAll('a');
     anchors.forEach((link) => {
@@ -95,6 +82,7 @@ export default class Router {
         // Returns this
         return this;
       }
+      
       return invoke().on(eventName, invoke);
     }
     /**
@@ -177,6 +165,7 @@ export default class Router {
   navigate(path) {
     return this.path(path).trigger('navigate');
   }
+
   path(pathname) {
     let frag;
 
@@ -192,6 +181,28 @@ export default class Router {
       window.history.pushState({}, null, this.options.root || '/');
       return this;
     }
+  }
+
+  /**
+   * Create a RegExp Route from a string
+   * This is the heart of the router and I've made it as small as possible!
+   *
+   * @param {String} Path of route
+   * @param {Array} Array of keys to fill
+   * @param {Bool} Case sensitive comparison
+   * @param {Bool} Strict mode
+   */
+  static regexRoute(path, keys, sensitive, strict) {
+    return regexRoute(path, keys, sensitive, strict);
+  }
+
+  static listen(opts = {}, routes = {}) {
+    return (() => {
+      for (let key in routes) {
+        this.add.call(this, key, routes[key])
+      }
+      return this;
+    }).call(new Grapnel(opts));
   }
 }
 
